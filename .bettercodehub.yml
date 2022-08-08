@@ -1,5 +1,8 @@
 exclude:
-- /js/lib/.*
+  - /js/lib/.*
+  - .nycrc.js
+  - /js-*
 component_depth: 1
 languages:
-- javascript
+  - javascript
+  - typescript
