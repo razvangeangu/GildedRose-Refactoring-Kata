@@ -17,45 +17,6 @@ export class GildedRose {
     this.items = items;
   }
 
-  private updateAgedBrie(item: Item) {
-    let quality = DEGRADE_VALUE;
-
-    if (item.sellIn < SELL_DUE_DATE) {
-      quality = DEGRADE_VALUE * 2;
-    }
-
-    item.quality += quality;
-
-    if (item.quality > MAX_QUALITY) {
-      item.quality = MAX_QUALITY;
-    }
-  }
-
-  private updateBackstagePass(item: Item) {
-    let quality = MIN_QUALITY;
-
-    if (item.sellIn < SELL_DUE_DATE) {
-      item.quality = quality;
-      return;
-    }
-
-    quality = DEGRADE_VALUE;
-
-    if (item.sellIn < 10) {
-      quality = 2;
-    }
-
-    if (item.sellIn < 5) {
-      quality = 3;
-    }
-
-    item.quality += quality;
-
-    if (item.quality > MAX_QUALITY) {
-      item.quality = MAX_QUALITY;
-    }
-  }
-
   private updateNormal(item: Item, multiplier: number = 1) {
     let quality = DEGRADE_VALUE * multiplier;
 
@@ -68,6 +29,31 @@ export class GildedRose {
     }
 
     item.quality -= quality;
+
+    if (item.quality > MAX_QUALITY) {
+      item.quality = MAX_QUALITY;
+    }
+  }
+
+  private updateBackstagePass(item: Item) {
+    if (item.sellIn < SELL_DUE_DATE) {
+      item.quality = MIN_QUALITY;
+      return;
+    }
+
+    this.updateNormal(item, -1);
+
+    if (item.sellIn < 10) {
+      this.updateNormal(item, -1);
+    }
+
+    if (item.sellIn < 5) {
+      this.updateNormal(item, -1);
+    }
+  }
+
+  private updateAgedBrie(item: Item) {
+    this.updateNormal(item, -1);
   }
 
   private updateConjured(item: Item) {
