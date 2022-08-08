@@ -62,7 +62,9 @@ export class GildedRose {
 
   updateQuality() {
     this.items.forEach((item) => {
-      item.sellIn -= 1;
+      if (item.name !== SULFURAS) {
+        item.sellIn -= 1;
+      }
 
       switch (item.name) {
         case AGED_BRIE:
