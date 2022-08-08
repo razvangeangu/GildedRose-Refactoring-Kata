@@ -18,28 +18,28 @@ export class GildedRose {
   }
 
   private updateAgedBrie(item: Item) {
-    let quality = 1;
+    let quality = DEGRADE_VALUE;
 
-    if (item.sellIn < 0) {
-      quality = 2;
+    if (item.sellIn < SELL_DUE_DATE) {
+      quality = DEGRADE_VALUE * 2;
     }
 
     item.quality += quality;
 
-    if (item.quality > 50) {
-      item.quality = 50;
+    if (item.quality > MAX_QUALITY) {
+      item.quality = MAX_QUALITY;
     }
   }
 
   private updateBackstagePass(item: Item) {
-    let quality = 0;
+    let quality = MIN_QUALITY;
 
-    if (item.sellIn < 0) {
+    if (item.sellIn < SELL_DUE_DATE) {
       item.quality = quality;
       return;
     }
 
-    quality = 1;
+    quality = DEGRADE_VALUE;
 
     if (item.sellIn < 10) {
       quality = 2;
@@ -51,23 +51,27 @@ export class GildedRose {
 
     item.quality += quality;
 
-    if (item.quality > 50) {
-      item.quality = 50;
+    if (item.quality > MAX_QUALITY) {
+      item.quality = MAX_QUALITY;
     }
   }
 
-  private updateNormal(item: Item) {
-    let quality = 1;
+  private updateNormal(item: Item, multiplier: number = 1) {
+    let quality = DEGRADE_VALUE * multiplier;
 
-    if (item.sellIn < 0) {
-      quality = 2;
+    if (item.sellIn < SELL_DUE_DATE) {
+      quality = DEGRADE_VALUE * 2 * multiplier;
     }
 
-    if (item.quality - quality < 0) {
-      quality = 0;
+    if (item.quality - quality < MIN_QUALITY) {
+      quality = MIN_QUALITY;
     }
 
     item.quality -= quality;
+  }
+
+  private updateConjured(item: Item) {
+    this.updateNormal(item, 2);
   }
 
   updateQuality() {
@@ -83,6 +87,10 @@ export class GildedRose {
           this.updateBackstagePass(item);
           break;
 
+        case CONJURED:
+          this.updateConjured(item);
+          break;
+
         case SULFURAS:
           break;
 
@@ -96,6 +104,12 @@ export class GildedRose {
   }
 }
 
+const MAX_QUALITY = 50;
+const MIN_QUALITY = 0;
+const DEGRADE_VALUE = 1;
+const SELL_DUE_DATE = 0;
+
 const AGED_BRIE = "Aged Brie";
 const BACKSTAGE_PASS = "Backstage passes to a TAFKAL80ETC concert";
 const SULFURAS = "Sulfuras, Hand of Ragnaros";
+const CONJURED = "Conjured Mana Cake";
