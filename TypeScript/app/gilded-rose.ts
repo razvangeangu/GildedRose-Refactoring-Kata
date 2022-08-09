@@ -26,6 +26,7 @@ export class GildedRose {
 
     if (item.quality - quality < MIN_QUALITY) {
       quality = MIN_QUALITY;
+      item.quality = MIN_QUALITY;
     }
 
     item.quality -= quality;
